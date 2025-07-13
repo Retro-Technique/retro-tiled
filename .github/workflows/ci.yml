@@ -1,0 +1,72 @@
+name: CI
+
+on:
+
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+
+  build:
+  
+    name: ${{ matrix.os }} ${{ matrix.platform }} ${{ matrix.configuration }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-2022, ubuntu-24.04]
+        platform: [x64]
+        configuration: ['Debug', 'Release']
+        include:
+            - os: windows-2022
+              c_compiler: cl
+              cpp_compiler: cl
+            - os: ubuntu-24.04
+              c_compiler: gcc
+              cpp_compiler: g++
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set reusable strings
+      id: strings
+      shell: bash
+      run: |
+        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+        echo "vcpkg-dir=${{ github.workspace }}/vcpkg" >> "$GITHUB_OUTPUT"
+         
+    - name: Install Cppcheck (Ubuntu)
+      if: matrix.os == 'ubuntu-24.04'
+      run: sudo apt-get update && sudo apt-get install -y cppcheck
+
+    - name: Install Cppcheck (Windows)
+      if: matrix.os == 'windows-2022'
+      shell: pwsh
+      run: choco install cppcheck
+
+    - name: Install vcpkg
+      run: |
+        git clone https://github.com/microsoft/vcpkg.git ${{ steps.strings.outputs.vcpkg-dir }}
+        ${{ steps.strings.outputs.vcpkg-dir }}/bootstrap-vcpkg.sh
+
+    - name: Run CMake
+      run: >
+        cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+        -DCMAKE_TOOLCHAIN_FILE=${{ steps.strings.outputs.vcpkg-dir }}/scripts/buildsystems/vcpkg.cmake
+        -DCMAKE_BUILD_TYPE=${{ matrix.configuration }}
+        ${{ matrix.os == 'windows-2022' && format('-DCMAKE_GENERATOR_PLATFORM={0}', matrix.platform) || '' }}
+        -S ${{ github.workspace }}
+
+    - name: Run Build
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.configuration }}
+
+    - name: Run Code Analysis
+      working-directory: ${{ github.workspace }}
+      run: cppcheck --enable=all --inconclusive --force --suppress=missingIncludeSystem --error-exitcode=1
+
+    - name: Run Unit Tests
+      working-directory: ${{ steps.strings.outputs.build-output-dir }}
+      run: ctest --build-config ${{ matrix.configuration }}
