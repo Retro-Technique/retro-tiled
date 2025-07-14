@@ -43,6 +43,7 @@
 #define __RETRO_TILED_H_INCLUDED__
 
 #include <filesystem>
+#include <vector>
 
 #include "tiled/config.h"
 #include "tiled/tmx.h"
