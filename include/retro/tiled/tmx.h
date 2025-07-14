@@ -43,4 +43,45 @@
 #error "Do not include this file directly, include <retro/tiled.h> instead."
 #endif
 
-#include "tmx/structs.h"
+namespace retro::tiled::tmx
+{
+
+	struct tileset
+	{
+		std::int32_t _firstgid = 0;
+		std::string _source;
+	};
+
+	struct data
+	{
+		std::string _encoding;
+		std::string _compression;
+		std::vector<std::uint32_t> _data;
+	};
+
+	struct layer
+	{
+		std::int32_t _id = 0;
+		std::string _name;
+		std::int32_t _width = 0;
+		std::int32_t _height = 0;
+		tmx::data _data;
+	};
+
+	struct map
+	{
+		std::string _tiledversion;
+		std::string _orientation;
+		std::string _renderorder;
+		std::int32_t _width = 0;
+		std::int32_t _height = 0;
+		std::int32_t _tilewidth = 0;
+		std::int32_t _tileheight = 0;
+		std::int32_t _infinite = 0;
+		std::int32_t _nextlayerid = 0;
+		std::int32_t _nextobjectid = 0;
+		std::vector<tmx::tileset> _tilesets;
+		std::vector<tmx::layer> _layers;
+	};
+
+}

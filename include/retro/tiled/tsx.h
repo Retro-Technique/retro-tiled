@@ -43,4 +43,28 @@
 #error "Do not include this file directly, include <retro/tiled.h> instead."
 #endif
 
-#include "tsx/structs.h"
+namespace retro::tiled::tsx
+{
+
+	struct image
+	{
+		std::string _source;
+		std::string _trans;
+		std::int32_t _width = 0;
+		std::int32_t _height = 0;
+	};
+
+	struct tileset
+	{
+		std::string _tiledversion;
+		std::string _name;
+		std::int32_t _tilewidth = 0;
+		std::int32_t _tileheight = 0;
+		std::int32_t _spacing = 0;
+		std::int32_t _margin = 0;
+		std::int32_t _tilecount = 0;
+		std::int32_t _columns = 0;
+		tsx::image _image;
+	};
+
+}
