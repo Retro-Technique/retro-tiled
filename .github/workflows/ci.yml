@@ -63,16 +63,14 @@ jobs:
     - name: Run Build
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.configuration }}
 
-    - name: Run Code Analysis
-      working-directory: ${{ github.workspace }}
-      run: |
-        if [ "${{ matrix.os }}" == "windows-2022" ]; then
-          # Command for Windows
-          for /R . %f in (*.h *.cpp *.inl) do cppcheck --enable=warning --language=c++ --platform=win64 --std=c++20 --error-exitcode=1 "%f"
-        else
-          # Command for Linux (Ubuntu)
-          find . -type f \( -name "*.h" -o -name "*.cpp" -o -name "*.inl" \) | xargs cppcheck --enable=warning --language=c++ --platform=unix64 --std=c++20 --error-exitcode=1
-        fi
+    - name: Run Code Analysis (Ubuntu)
+      if: matrix.os == 'ubuntu-24.04'
+      run: find . -type f \( -name "*.h" -o -name "*.cpp" -o -name "*.inl" \) | xargs cppcheck --enable=warning --language=c++ --platform=unix64 --std=c++20 --error-exitcode=1
+
+    - name: Run Code Analysis (Windows)
+      if: matrix.os == 'windows-2022'
+      shell: pwsh
+      run:  for /R . %f in (*.h *.cpp *.inl) do cppcheck --enable=warning --language=c++ --platform=win64 --std=c++20 --error-exitcode=1 "%f"
 
     - name: Run Unit Tests
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
