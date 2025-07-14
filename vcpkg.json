@@ -1,7 +1,10 @@
 {
   "dependencies": [
     "boost-assert",
-    "boost-log",
-    "boost-test"
+    "boost-beast",
+    "boost-iostreams",
+    "boost-property-tree",
+    "boost-test",
+    "boost-algorithm"
   ]
 }

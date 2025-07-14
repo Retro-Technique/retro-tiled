@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.21)
 
-# -> TODO: Update the project name and description
-set(PROJECT_NAME template)
-set(PROJECT_DESCRIPTION "A template project for CMake-based C++ applications")
-# <- TODO
-
+set(PROJECT_NAME retro-tiled)
+set(PROJECT_DESCRIPTION "Retro Tiled Map Editor parser module")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 project(${PROJECT_NAME} 
 	LANGUAGES CXX
@@ -22,5 +22,4 @@ if(${PROJECT_NAME}_BUILD_TESTS)
     add_subdirectory(tests)
 endif()
 
-add_subdirectory(app/project-app)
-add_subdirectory(libs/project-business)
+add_subdirectory(src)
