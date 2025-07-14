@@ -60,11 +60,10 @@ namespace retro::tiled::tmx
 
 	private:
 
-		void decode_xml_data(const std::string_view& encoded_data, std::vector<std::uint32_t>& decoded_data);
-		void decode_base64_data(const std::string_view& encoded_data, const std::string_view& compressing, std::vector<uint32_t>& decoded_data);
-		void decode_csv_data(const std::string_view& encoded_data, std::vector<std::uint32_t>& decoded_data);
-		const std::vector<char>& uncompress_data(const std::string_view& compressing, std::vector<char>& compressed_data) const;
-		void fill_data(const std::vector<char>& uncompressed_data, std::vector<std::uint32_t>& data);
+		void decode_xml_data();
+		void decode_base64_data(const std::string_view& compressing);
+		void decode_csv_data();
+		void uncompress_data(const std::string_view& compressing, std::vector<char>& compressed_data) const;
 
 	};
 

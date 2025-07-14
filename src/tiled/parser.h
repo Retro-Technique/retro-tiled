@@ -49,7 +49,7 @@ namespace retro::tiled
 	{
 	public:
 
-		parser(T& element);
+		explicit parser(T& element);
 		~parser() = default;
 
 	private:

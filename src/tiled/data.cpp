@@ -63,62 +63,62 @@ namespace retro::tiled::tmx
 		{
 			BOOST_ASSERT_MSG(compressing.empty(), "Invalid data encoding and compression combination.");
 
-			decode_xml_data(m_input_data.data(), m_output_data);
+			decode_xml_data();
 		}
 
 		if (encoding == "base64")
 		{
-			decode_base64_data(m_input_data.data(), compressing, m_output_data);
+			decode_base64_data(compressing);
 		}
 
 		if (encoding == "csv")
 		{
 			BOOST_ASSERT_MSG(compressing.empty(), "Invalid data encoding and compression combination.");
 
-			decode_csv_data(m_input_data.data(), m_output_data);
+			decode_csv_data();
 		}
 	}
 
-	void data_parser::decode_xml_data(const std::string_view& encoded_data, std::vector<std::uint32_t>& decoded_data)
+	void data_parser::decode_xml_data()
 	{
 
 	}
 
-	void data_parser::decode_base64_data(const std::string_view& encoded_data, const std::string_view& compressing, std::vector<uint32_t>& decoded_data)
+	void data_parser::decode_base64_data(const std::string_view& compressing)
 	{
-		std::vector<char> _decoded_data;
+		std::vector<char> decoded_data;
 
-		const std::size_t decoded_size = boost::beast::detail::base64::decoded_size(encoded_data.size());
-		_decoded_data.resize(decoded_size);
+		const std::size_t decoded_size = boost::beast::detail::base64::decoded_size(m_input_data.size());
+		decoded_data.resize(decoded_size);
 
-		const std::pair<std::size_t, std::size_t> pair = boost::beast::detail::base64::decode(_decoded_data.data(), encoded_data.data(), encoded_data.size());
+		const std::pair<std::size_t, std::size_t> pair = boost::beast::detail::base64::decode(decoded_data.data(), m_input_data.data(), m_input_data.size());
 
-		_decoded_data.resize(pair.first);
+		decoded_data.resize(pair.first);
 
 		if (!compressing.empty())
 		{
-			_decoded_data = uncompress_data(compressing, _decoded_data);
+			uncompress_data(compressing, decoded_data);
 		}
 
-		const std::uint32_t* buffer = reinterpret_cast<const std::uint32_t*>(_decoded_data.data());
+		const std::uint32_t* buffer = reinterpret_cast<const std::uint32_t*>(decoded_data.data());
 
-		decoded_data.assign(buffer, buffer + (_decoded_data.size() / sizeof(std::uint32_t)));
+		m_output_data.assign(buffer, buffer + (decoded_data.size() / sizeof(std::uint32_t)));
 	}
 
-	void data_parser::decode_csv_data(const std::string_view& encoded_data, std::vector<std::uint32_t>& decoded_data)
+	void data_parser::decode_csv_data()
 	{
 		std::vector<std::string> decoded_strings;
 
-		boost::split(decoded_strings, encoded_data, boost::is_any_of(","));
+		boost::split(decoded_strings, m_input_data, boost::is_any_of(","));
 
-		std::transform(decoded_strings.begin(), decoded_strings.end(), std::back_inserter(decoded_data),
+		std::transform(decoded_strings.begin(), decoded_strings.end(), std::back_inserter(m_output_data),
 					   [](const std::string& str)
 					   {
 						   return static_cast<std::uint32_t>(std::stoul(str));
 					   });
 	}
 
-	const std::vector<char>& data_parser::uncompress_data(const std::string_view& compressing, std::vector<char>& compressed_data) const
+	void data_parser::uncompress_data(const std::string_view& compressing, std::vector<char>& compressed_data) const
 	{
 		boost::iostreams::filtering_ostream decompressor;
 
@@ -134,18 +134,10 @@ namespace retro::tiled::tmx
 		{
 			decompressor.push(boost::iostreams::zstd_decompressor());
 		}
+
 		decompressor.push(boost::iostreams::back_inserter(compressed_data));
 		decompressor.write(compressed_data.data(), compressed_data.size());
 		decompressor.reset();
-
-		return compressed_data;
-	}
-
-	void data_parser::fill_data(const std::vector<char>& uncompressed_data, std::vector<std::uint32_t>& data)
-	{
-		const std::uint32_t* buffer = reinterpret_cast<const std::uint32_t*>(uncompressed_data.data());
-
-		data.assign(buffer, buffer + (uncompressed_data.size() / sizeof(std::uint32_t)));
 	}
 
 }
