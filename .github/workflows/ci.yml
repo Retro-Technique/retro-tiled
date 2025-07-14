@@ -42,6 +42,7 @@ jobs:
 
     - name: Install Cppcheck (Windows)
       if: matrix.os == 'windows-2022'
+      shell: cmd
       run: |
         choco install cppcheck
         RefreshEnv.cmd
