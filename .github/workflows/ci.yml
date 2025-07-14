@@ -42,8 +42,9 @@ jobs:
 
     - name: Install Cppcheck (Windows)
       if: matrix.os == 'windows-2022'
-      shell: pwsh
-      run: choco install cppcheck
+      run: |
+        choco install cppcheck
+        RefreshEnv.cmd
 
     - name: Install vcpkg
       run: |
