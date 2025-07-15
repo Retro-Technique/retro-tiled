@@ -9,7 +9,7 @@ BOOST_AUTO_TEST_CASE(TMXReadTest)
 
 	try
 	{
-		retro::tiled::file(map).load_from_file("..\\..\\..\\..\\tests\\res\\room_01.tmx");
+		retro::tiled::file(map).load_from_file("res\\room_01.tmx");
 	}
 	catch (const std::exception& e)
 	{

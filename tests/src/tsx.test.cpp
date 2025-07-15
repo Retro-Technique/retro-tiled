@@ -9,7 +9,7 @@ BOOST_AUTO_TEST_CASE(TSXReadTest)
 
 	try
 	{
-		retro::tiled::file(tileset).load_from_file("..\\..\\..\\..\\tests\\res\\tileset_01.tsx");
+		retro::tiled::file(tileset).load_from_file("res\\tileset_01.tsx");
 	}
 	catch (const std::exception& e)
 	{
