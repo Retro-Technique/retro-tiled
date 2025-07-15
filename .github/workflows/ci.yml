@@ -66,6 +66,7 @@ jobs:
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.configuration }}
 
     - name: Run Code Analysis
+      shell: cmd
       run: cppcheck --enable=warning --language=c++ --platform=${{ matrix.os == 'windows-2022' && 'win64' || 'unix64' }} --std=c++20 -I include/retro/tiled --error-exitcode=1 src/tiled/*
 
     - name: Run Unit Tests
