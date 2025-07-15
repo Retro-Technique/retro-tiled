@@ -48,6 +48,8 @@ jobs:
         RefreshEnv.cmd
 
     - name: Check Cppcheck
+      if: matrix.os == 'windows-2022'
+      shell: cmd
       run: cppcheck --version
 
     - name: Install vcpkg
