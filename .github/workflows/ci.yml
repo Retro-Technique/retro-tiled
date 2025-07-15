@@ -43,14 +43,7 @@ jobs:
     - name: Install Cppcheck (Windows)
       if: matrix.os == 'windows-2022'
       shell: cmd
-      run: |
-        choco install cppcheck
-        RefreshEnv.cmd
-
-    - name: Check Cppcheck
-      if: matrix.os == 'windows-2022'
-      shell: cmd
-      run: '"C:\Program Files\Cppcheck\cppcheck.exe" --enable=warning --language=c++ --platform=win64 --std=c++20 -I include/retro/tiled --error-exitcode=1 src/tiled/*'
+      run: choco install cppcheck
 
     - name: Install vcpkg
       run: |
@@ -70,9 +63,14 @@ jobs:
     - name: Run Build
       run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.configuration }}
 
-    - name: Run Code Analysis
+    - name: Run Code Analysis (Ubuntu)
+      if: matrix.os == 'ubuntu-24.04'
+      run: cppcheck --enable=warning --language=c++ --platform=unix64 --std=c++20 -I include/retro/tiled --error-exitcode=1 src/tiled/*
+  
+    - name: Run Code Analysis (Windows)
+      if: matrix.os == 'windows-2022'
       shell: cmd
-      run: cppcheck --enable=warning --language=c++ --platform=${{ matrix.os == 'windows-2022' && 'win64' || 'unix64' }} --std=c++20 -I include/retro/tiled --error-exitcode=1 src/tiled/*
+      run: '"C:\Program Files\Cppcheck\cppcheck.exe" --enable=warning --language=c++ --platform=win64 --std=c++20 -I include/retro/tiled --error-exitcode=1 src/tiled/*'
 
     - name: Run Unit Tests
       working-directory: ${{ steps.strings.outputs.build-output-dir }}
