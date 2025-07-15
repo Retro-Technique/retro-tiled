@@ -50,7 +50,7 @@ jobs:
     - name: Check Cppcheck
       if: matrix.os == 'windows-2022'
       shell: cmd
-      run: C:\ProgramData\chocolatey\bin\cppcheck.exe --enable=warning --language=c++ --platform=win64 --std=c++20 -I include/retro/tiled --error-exitcode=1 src/tiled/*
+      run: '"C:\Program Files\Cppcheck\cppcheck.exe" --enable=warning --language=c++ --platform=win64 --std=c++20 -I include/retro/tiled --error-exitcode=1 src/tiled/*'
 
     - name: Install vcpkg
       run: |
