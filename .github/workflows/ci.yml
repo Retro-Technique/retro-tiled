@@ -38,9 +38,7 @@ jobs:
          
     - name: Install Cppcheck (Ubuntu)
       if: matrix.os == 'ubuntu-24.04'
-      run: |
-        sudo apt-get update && sudo apt-get install -y cppcheck
-        cppcheck --version || echo "Cppcheck installation verification failed"
+      run: sudo apt-get update && sudo apt-get install -y cppcheck
 
     - name: Install Cppcheck (Windows)
       if: matrix.os == 'windows-2022'
@@ -48,7 +46,9 @@ jobs:
       run: |
         choco install cppcheck
         RefreshEnv.cmd
-        cppcheck --version || echo "Cppcheck installation verification failed"
+
+    - name: Check Cppcheck
+      run: cppcheck --version
 
     - name: Install vcpkg
       run: |
