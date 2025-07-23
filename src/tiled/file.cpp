@@ -7,7 +7,7 @@
  * Copyright(c) 2014-2025 Retro Technique
  *
  * This software is a computer program whose purpose is to provide
- * minimalist "C with classes" functionalities.
+ * minimalist modern C++ functionalities for 2D game development.
  *
  * This software is governed by the CeCILL license under French law and
  * abiding by the rules of distribution of free software.  You can  use,
@@ -42,24 +42,26 @@
 
 namespace retro::tiled
 {
-	
-	template<typename T>
-	file<T>::file(T& element)
-		: m_element(element)
-	{
 
-	}
-
-	template<typename T>
-	void file<T>::load_from_file(const std::filesystem::path& file_path)
+	template<>
+	tsx::tileset load_from_file<tsx::tileset>(const std::filesystem::path& file_path)
 	{
 		boost::property_tree::ptree pt;
 		boost::property_tree::read_xml(file_path.string(), pt);
 
-		parser<T>(m_element).read(pt);
+		return read<tsx::tileset>(pt.get_child("tileset"));
 	}
 
-	template class RETRO_TILED_API file<tmx::map>;
-	template class RETRO_TILED_API file<tsx::tileset>;
+	template<>
+	tmx::map load_from_file<tmx::map>(const std::filesystem::path& file_path)
+	{
+		boost::property_tree::ptree pt;
+		boost::property_tree::read_xml(file_path.string(), pt);
+
+		return read<tmx::map>(pt.get_child("map"));
+	}
+
+	template RETRO_TILED_API tsx::tileset load_from_file<tsx::tileset>(const std::filesystem::path& path);
+	template RETRO_TILED_API tmx::map load_from_file<tmx::map>(const std::filesystem::path& path);
 
 } 

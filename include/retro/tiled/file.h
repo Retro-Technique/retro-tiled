@@ -7,7 +7,7 @@
  * Copyright(c) 2014-2025 Retro Technique
  *
  * This software is a computer program whose purpose is to provide
- * minimalist "C with classes" functionalities.
+ * minimalist modern C++ functionalities for 2D game development.
  *
  * This software is governed by the CeCILL license under French law and
  * abiding by the rules of distribution of free software.  You can  use,
@@ -47,21 +47,9 @@ namespace retro::tiled
 {
 
 	template<typename T>
-	class RETRO_TILED_API file
-	{
-	public:
+	concept TiledLoadable = std::is_same_v<T, tsx::tileset> || std::is_same_v<T, tmx::map>;
 
-		file(T& element);
-		~file() = default;
-
-	private:
-
-		T& m_element;
-
-	public:
-
-		void load_from_file(const std::filesystem::path& file_path);
-
-	};
+	template<TiledLoadable T>
+	RETRO_TILED_API T load_from_file(const std::filesystem::path& file_path);
 
 }

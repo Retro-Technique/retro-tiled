@@ -7,7 +7,7 @@
  * Copyright(c) 2014-2025 Retro Technique
  *
  * This software is a computer program whose purpose is to provide
- * minimalist "C with classes" functionalities.
+ * minimalist modern C++ functionalities for 2D game development.
  *
  * This software is governed by the CeCILL license under French law and
  * abiding by the rules of distribution of free software.  You can  use,
@@ -46,6 +46,13 @@
 namespace retro::tiled::tmx
 {
 
+	struct property
+	{
+		std::string _name;
+		std::string _type;
+		std::string _value;
+	};
+
 	struct tileset
 	{
 		std::int32_t _firstgid = 0;
@@ -63,9 +70,32 @@ namespace retro::tiled::tmx
 	{
 		std::int32_t _id = 0;
 		std::string _name;
+		std::string _class;
 		std::int32_t _width = 0;
 		std::int32_t _height = 0;
 		tmx::data _data;
+		std::vector<tmx::property> _properties;
+	};
+
+	struct object
+	{
+		std::int32_t _id = 0;
+		std::string _name;
+		std::string _type;
+		std::int32_t _x = 0;
+		std::int32_t _y = 0;
+		std::int32_t _width = 0;
+		std::int32_t _height = 0;
+		std::vector<tmx::property> _properties;
+	};
+
+	struct object_group
+	{
+		std::int32_t _id = 0;
+		std::string _name;
+		std::string _class;
+		std::vector<tmx::object> _objects;
+		std::vector<tmx::property> _properties;
 	};
 
 	struct map
@@ -82,6 +112,7 @@ namespace retro::tiled::tmx
 		std::int32_t _nextobjectid = 0;
 		std::vector<tmx::tileset> _tilesets;
 		std::vector<tmx::layer> _layers;
+		std::vector<tmx::object_group> _object_groups;
 	};
 
 }

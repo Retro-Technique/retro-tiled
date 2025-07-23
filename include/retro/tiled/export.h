@@ -7,7 +7,7 @@
  * Copyright(c) 2014-2025 Retro Technique
  *
  * This software is a computer program whose purpose is to provide
- * minimalist "C with classes" functionalities.
+ * minimalist modern C++ functionalities for 2D game development.
  *
  * This software is governed by the CeCILL license under French law and
  * abiding by the rules of distribution of free software.  You can  use,
@@ -37,41 +37,29 @@
  *
  */
 
-namespace retro::tiled
-{
+#pragma once
 
-	template<>
-	void parser<tsx::image>::read(const boost::property_tree::ptree& pt)
-	{
-		m_element._source = pt.get<std::string>("<xmlattr>.source", "");
-		m_element._trans = pt.get<std::string>("<xmlattr>.trans", "");
-		m_element._width = pt.get<std::int32_t>("<xmlattr>.width", 0);
-		m_element._height = pt.get<std::int32_t>("<xmlattr>.height", 0);
-	}
+#ifndef __RETRO_TILED_H_INCLUDED__
+#error "Do not include this file directly, include <retro/tiled.h> instead."
+#endif
 
-	template<>
-	void parser<tsx::tileset>::read(const boost::property_tree::ptree& pt)
-	{
-		m_element._tiledversion = pt.get<std::string>("tileset.<xmlattr>.tiledversion", "");
-		m_element._name = pt.get<std::string>("tileset.<xmlattr>.name", "");
-		m_element._tilewidth = pt.get<std::int32_t>("tileset.<xmlattr>.tilewidth", 0);
-		m_element._tileheight = pt.get<std::int32_t>("tileset.<xmlattr>.tileheight", 0);
-		m_element._spacing = pt.get<std::int32_t>("tileset.<xmlattr>.spacing", 0);
-		m_element._margin = pt.get<std::int32_t>("tileset.<xmlattr>.margin", 0);
-		m_element._tilecount = pt.get<std::int32_t>("tileset.<xmlattr>.tilecount", 0);
-		m_element._columns = pt.get<std::int32_t>("tileset.<xmlattr>.columns", 0);
+#if defined(_WIN32)
+	#define RETRO_TILED_API_EXPORT __declspec(dllexport)
+	#define RETRO_TILED_API_IMPORT __declspec(dllimport)
+#else
+	#define RETRO_TILED_API_EXPORT __attribute__((__visibility__("default")))
+	#define RETRO_TILED_API_IMPORT __attribute__((__visibility__("default")))
+#endif
 
-		std::for_each(pt.get_child("tileset").begin(), pt.get_child("tileset").end(),
-					  [this](const boost::property_tree::ptree::value_type& child_node)
-					  {
-						  if (child_node.first == "image")
-						  {
-							  tsx::image image;
-							  parser<tsx::image>(image).read(child_node.second);
-							  m_element._image = image;
-						  }
-					  }
-		);
-	}
+#if defined(RETRO_TILED_EXPORTS)
+	#define RETRO_TILED_API RETRO_TILED_API_EXPORT
+#else
+	#define RETRO_TILED_API RETRO_TILED_API_IMPORT
+#endif
 
-}
+#ifdef _MSC_VER
+
+#pragma warning(disable : 4251) 
+#pragma warning(disable : 4275)
+
+#endif

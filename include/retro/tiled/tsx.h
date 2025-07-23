@@ -7,7 +7,7 @@
  * Copyright(c) 2014-2025 Retro Technique
  *
  * This software is a computer program whose purpose is to provide
- * minimalist "C with classes" functionalities.
+ * minimalist modern C++ functionalities for 2D game development.
  *
  * This software is governed by the CeCILL license under French law and
  * abiding by the rules of distribution of free software.  You can  use,

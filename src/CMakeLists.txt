@@ -9,7 +9,9 @@ add_library(${PROJECT_NAME}
 		"tiled/pch.h"
 		"tiled/parser.h"
 		"tiled/file.cpp"
- "tiled/data_parser.h" "tiled/data_parser.cpp")
+		"tiled/data_parser.h" 
+		"tiled/data_parser.cpp"
+)
 
 target_include_directories(${PROJECT_NAME}  
 	PUBLIC 

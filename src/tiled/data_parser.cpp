@@ -7,7 +7,7 @@
  * Copyright(c) 2014-2025 Retro Technique
  *
  * This software is a computer program whose purpose is to provide
- * minimalist "C with classes" functionalities.
+ * minimalist modern C++ functionalities for 2D game development.
  *
  * This software is governed by the CeCILL license under French law and
  * abiding by the rules of distribution of free software.  You can  use,
@@ -91,9 +91,9 @@ namespace retro::tiled::tmx
 		const std::size_t decoded_size = boost::beast::detail::base64::decoded_size(m_input_data.size());
 		decoded_data.resize(decoded_size);
 
-		const std::pair<std::size_t, std::size_t> pair = boost::beast::detail::base64::decode(decoded_data.data(), m_input_data.data(), m_input_data.size());
+		const auto [written, _] = boost::beast::detail::base64::decode(decoded_data.data(), m_input_data.data(), m_input_data.size());
 
-		decoded_data.resize(pair.first);
+		decoded_data.resize(written);
 
 		if (!compressing.empty())
 		{
